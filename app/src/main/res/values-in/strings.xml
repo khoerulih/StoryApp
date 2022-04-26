@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StoryApp</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="content_image">Gambar User</string>
+    <string name="story_thumbnail">Story Thumbnail</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="description_hint">Masukkan Deskripsi</string>
+    <string name="create_story">Membuat Story</string>
+    <string name="add_story_button">Tombol Membuat Story</string>
+    <string name="logout">Logout</string>
+    <string name="language">Ubah Bahasa</string>
+    <string name="login_success">Login Berhasil</string>
+    <string name="login_failed">Login Gagal</string>
+    <string name="open_camera_failed">Gagal Membuka Kamera</string>
+    <string name="take_photo_failed">Gagal Mengambil Gambar</string>
+    <string name="description_story_error">Deskripsi tidak boleh kosong</string>
+    <string name="upload_empty">Silahkan upload file terlebih dahulu</string>
+    <string name="pemission_error">Tidak mendapatkan permission.</string>
+    <string name="choose_picture">Pilih Gambar</string>
+    <string name="upload_story_success">Upload Story Berhasil</string>
+    <string name="upload_story_failed">Upload Story Gagal</string>
+    <string name="logout_confirmation">Apakah anda yakin?</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="logout_success">Logout Berhasil</string>
+    <string name="register_failed">Register Gagal</string>
+    <string name="register_success">Register Berhasil, Silahkan Login</string>
+    <string name="data_empty">Tidak ada data yang bisa ditampilkan</string>
+    <string name="email_invalid">Format email salah</string>
+    <string name="email_empty">Email tidak boleh kosong</string>
+    <string name="name_empty">Nama tidak boleh kosong</string>
+    <string name="password_minimum">Password minimal 6 huruf</string>
+    <string name="password_empty">Password tidak boleh kosong</string>
+    <string name="setting">Pengaturan</string>
+</resources>

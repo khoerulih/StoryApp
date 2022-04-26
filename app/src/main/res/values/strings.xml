@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">StoryApp</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="content_image">User Image</string>
+    <string name="story_thumbnail">Story Thumbnail</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="description_hint">Add Description</string>
+    <string name="create_story">Create Story</string>
+    <string name="add_story_button">Add Story Button</string>
+    <string name="logout">Logout</string>
+    <string name="language">Change Language</string>
+    <string name="login_success">Login successful</string>
+    <string name="login_failed">Login failed</string>
+    <string name="open_camera_failed">Failed to open camera</string>
+    <string name="take_photo_failed">Failed to take picture</string>
+    <string name="description_story_error">Description cannot be empty!!</string>
+    <string name="upload_empty">Please, upload your file first!!</string>
+    <string name="pemission_error">Get permission failed</string>
+    <string name="choose_picture">Choose a Picture</string>
+    <string name="upload_story_success">Upload Story Success</string>
+    <string name="upload_story_failed">Upload Story Failed</string>
+    <string name="logout_confirmation">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="logout_success">Logout Success</string>
+    <string name="register_failed">Register Failed</string>
+    <string name="register_success">Register Success, Please Login</string>
+    <string name="data_empty">There`s nothing to show</string>
+    <string name="email_invalid">Email invalid</string>
+    <string name="email_empty">Email cannot be empty!!</string>
+    <string name="name_empty">Name cannot be empty!!</string>
+    <string name="password_minimum">Password must more than six letters!!</string>
+    <string name="password_empty">Password cannot be empty!!</string>
+    <string name="setting">Setting</string>
+</resources>
