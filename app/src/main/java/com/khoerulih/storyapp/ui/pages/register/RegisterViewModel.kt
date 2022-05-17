@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.khoerulih.storyapp.data.ApiConfig
-import com.khoerulih.storyapp.data.RegisterResponse
+import com.khoerulih.storyapp.data.remote.retrofit.ApiConfig
+import com.khoerulih.storyapp.data.remote.responses.RegisterResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

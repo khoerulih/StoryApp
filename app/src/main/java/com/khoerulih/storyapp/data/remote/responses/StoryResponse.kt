@@ -1,4 +1,4 @@
-package com.khoerulih.storyapp.data
+package com.khoerulih.storyapp.data.remote.responses
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

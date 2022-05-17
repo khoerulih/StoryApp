@@ -2,9 +2,9 @@ package com.khoerulih.storyapp.ui.pages.login
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.khoerulih.storyapp.data.ApiConfig
-import com.khoerulih.storyapp.data.LoginResponse
-import com.khoerulih.storyapp.data.LoginResult
+import com.khoerulih.storyapp.data.remote.retrofit.ApiConfig
+import com.khoerulih.storyapp.data.remote.responses.LoginResponse
+import com.khoerulih.storyapp.data.remote.responses.LoginResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -35,4 +35,8 @@
     <string name="password_minimum">Password minimal 6 huruf</string>
     <string name="password_empty">Password tidak boleh kosong</string>
     <string name="setting">Pengaturan</string>
+    <string name="capture_button">Capture Button</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="maps">Maps</string>
 </resources>

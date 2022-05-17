@@ -3,7 +3,7 @@ package com.khoerulih.storyapp.ui.pages.detailstory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.Glide
-import com.khoerulih.storyapp.data.ListStoryItem
+import com.khoerulih.storyapp.data.remote.responses.ListStoryItem
 import com.khoerulih.storyapp.databinding.ActivityDetailStoryBinding
 
 class DetailStoryActivity : AppCompatActivity() {

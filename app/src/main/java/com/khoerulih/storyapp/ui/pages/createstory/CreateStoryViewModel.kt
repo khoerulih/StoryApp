@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.khoerulih.storyapp.data.ApiConfig
-import com.khoerulih.storyapp.data.CreateStoryResponse
+import com.khoerulih.storyapp.data.remote.retrofit.ApiConfig
+import com.khoerulih.storyapp.data.remote.responses.CreateStoryResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -17,8 +17,8 @@ class CreateStoryViewModel: ViewModel() {
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
-    fun createStory(token: String?, image: MultipartBody.Part, description: RequestBody) {
-        val client = ApiConfig.getApiService().createStory("Bearer $token", image, description)
+    fun createStory(token: String?, image: MultipartBody.Part, description: RequestBody, lat: Float, lon: Float) {
+        val client = ApiConfig.getApiService().createStory("Bearer $token", image, description, lat, lon)
         client.enqueue(object : Callback<CreateStoryResponse> {
             override fun onResponse(call: Call<CreateStoryResponse>, response: Response<CreateStoryResponse>) {
                 if (response.isSuccessful) {

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.khoerulih.storyapp.data.ListStoryItem
+import com.khoerulih.storyapp.data.remote.responses.ListStoryItem
 import com.khoerulih.storyapp.databinding.ItemRowStoryBinding
 import com.khoerulih.storyapp.ui.pages.detailstory.DetailStoryActivity
 import androidx.core.util.Pair

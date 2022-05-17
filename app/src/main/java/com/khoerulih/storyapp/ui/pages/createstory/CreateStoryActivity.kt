@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.khoerulih.storyapp.R
 import com.khoerulih.storyapp.databinding.ActivityCreateStoryBinding
 import com.khoerulih.storyapp.ui.pages.ViewModelFactory
@@ -39,6 +42,9 @@ class CreateStoryActivity : AppCompatActivity() {
 
     private var getFile: File? = null
     private var token: String? = null
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentLocation: Location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +97,10 @@ class CreateStoryActivity : AppCompatActivity() {
                         file.name,
                         requestImageFile
                     )
+                    val lat = currentLocation.latitude.toFloat()
+                    val lon = currentLocation.longitude.toFloat()
 
-                    createStoryViewModel.createStory(token, imageMultipart, description)
+                    createStoryViewModel.createStory(token, imageMultipart, description, lat, lon)
                     showLoading(true)
                 } else {
                     Toast.makeText(this, getString(R.string.description_story_error), Toast.LENGTH_SHORT).show()
@@ -107,8 +115,58 @@ class CreateStoryActivity : AppCompatActivity() {
             setUploadStatus(status)
         }
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getMyLastLocation()
+
         supportActionBar?.title = "Create Story"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                    getMyLastLocation()
+                }
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                    getMyLastLocation()
+                }
+                else -> {}
+            }
+        }
+
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun getMyLastLocation() {
+        if(checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ){
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    currentLocation = location
+                } else {
+                    Toast.makeText(
+                        this@CreateStoryActivity,
+                        "Location is not found. Try Again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -150,8 +208,8 @@ class CreateStoryActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = it.data?.getSerializableExtra("picture") as File
-            val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
+            val myFile = it.data?.getSerializableExtra(EXTRA_PICTURE) as File
+            val isBackCamera = it.data?.getBooleanExtra(IS_BACK_CAMERA, true) as Boolean
 
             getFile = myFile
             val result = rotateBitmap(
@@ -197,9 +255,12 @@ class CreateStoryActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val CAMERA_X_RESULT = 200
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+
+        const val CAMERA_X_RESULT = 200
+        const val EXTRA_PICTURE = "picture"
+        const val IS_BACK_CAMERA = "isBackCamera"
 
         fun createStoryActivityIntent(context: Context): Intent {
             return Intent(context, CreateStoryActivity::class.java)

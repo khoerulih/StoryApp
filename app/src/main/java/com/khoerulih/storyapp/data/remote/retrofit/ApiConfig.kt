@@ -1,4 +1,4 @@
-package com.khoerulih.storyapp.data
+package com.khoerulih.storyapp.data.remote.retrofit
 
 import com.khoerulih.storyapp.BuildConfig
 import okhttp3.OkHttpClient

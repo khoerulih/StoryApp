@@ -17,12 +17,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.khoerulih.storyapp.R
-import com.khoerulih.storyapp.data.ListStoryItem
+import com.khoerulih.storyapp.data.remote.responses.ListStoryItem
 import com.khoerulih.storyapp.databinding.ActivityMainBinding
 import com.khoerulih.storyapp.ui.pages.ListStoryAdapter
 import com.khoerulih.storyapp.ui.pages.ViewModelFactory
 import com.khoerulih.storyapp.ui.pages.createstory.CreateStoryActivity
 import com.khoerulih.storyapp.ui.pages.login.LoginActivity
+import com.khoerulih.storyapp.ui.pages.maps.MapsActivity
 import com.khoerulih.storyapp.utils.SettingPreferences
 import com.khoerulih.storyapp.utils.SettingViewModel
 
@@ -31,6 +32,8 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding
+
+    private lateinit var stories: ArrayList<ListStoryItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +85,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.maps -> {
+                goToMapsActivity()
+                return true
+            }
             R.id.logout -> {
                 val pref = SettingPreferences.getInstance(dataStore)
                 val settingViewModel =
@@ -110,9 +117,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setListData(listUsers: List<ListStoryItem>) {
-        val stories = ArrayList<ListStoryItem>()
-        for (story in listUsers) {
+    private fun setListData(listStories: List<ListStoryItem>) {
+        stories = ArrayList()
+        for (story in listStories) {
             val list = ListStoryItem(
                 story.photoUrl,
                 story.createdAt,
@@ -136,6 +143,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToCreateStoryActivity() {
         val intent = CreateStoryActivity.createStoryActivityIntent(this)
+        startActivity(intent)
+    }
+
+    private fun goToMapsActivity() {
+        val intent = MapsActivity.mapsActivityIntent(this)
+        intent.putExtra(MapsActivity.EXTRA_STORIES, stories)
         startActivity(intent)
     }
 
