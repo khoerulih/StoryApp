@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +21,7 @@ import com.khoerulih.storyapp.R
 import com.khoerulih.storyapp.data.remote.responses.ListStoryItem
 import com.khoerulih.storyapp.databinding.ActivityMainBinding
 import com.khoerulih.storyapp.ui.pages.ListStoryAdapter
+import com.khoerulih.storyapp.ui.pages.LoadingStateAdapter
 import com.khoerulih.storyapp.ui.pages.ViewModelFactory
 import com.khoerulih.storyapp.ui.pages.createstory.CreateStoryActivity
 import com.khoerulih.storyapp.ui.pages.login.LoginActivity
@@ -32,8 +34,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding
-
-    private lateinit var stories: ArrayList<ListStoryItem>
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +42,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
 
         val pref = SettingPreferences.getInstance(dataStore)
-        val settingViewModel = ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+        val settingViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(application, pref)
+        )[SettingViewModel::class.java]
 
-        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MainViewModel::class.java]
+        mainViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory.getInstance(application, pref)
+        )[MainViewModel::class.java]
 
         binding?.rvStory?.setHasFixedSize(true)
 
@@ -55,26 +62,14 @@ class MainActivity : AppCompatActivity() {
         settingViewModel.getSession().observe(this) { token ->
             if (token.isNullOrEmpty()) {
                 goToLoginActivity()
-            } else {
-                mainViewModel.getAllStory(token)
             }
-        }
-
-        mainViewModel.listStory.observe(this) { story ->
-            setListData(story)
-
-            if(story.isNullOrEmpty()){
-                Toast.makeText(this, getString(R.string.data_empty), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        mainViewModel.isLoading.observe(this) {
-            showLoading(it)
         }
 
         binding?.fabAdd?.setOnClickListener {
             goToCreateStoryActivity()
         }
+
+        setListData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -92,7 +87,10 @@ class MainActivity : AppCompatActivity() {
             R.id.logout -> {
                 val pref = SettingPreferences.getInstance(dataStore)
                 val settingViewModel =
-                    ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+                    ViewModelProvider(
+                        this,
+                        ViewModelFactory.getInstance(application, pref)
+                    )[SettingViewModel::class.java]
                 AlertDialog.Builder(this)
                     .setTitle(getString(R.string.logout))
                     .setMessage(getString(R.string.logout_confirmation))
@@ -100,7 +98,8 @@ class MainActivity : AppCompatActivity() {
                         val intent = LoginActivity.loginActivityIntent(this)
                         startActivity(intent)
                         settingViewModel.deleteSession()
-                        Toast.makeText(this, getString(R.string.logout_success), Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.logout_success), Toast.LENGTH_LONG)
+                            .show()
                         finish()
                     }
                     .setNegativeButton(getString(R.string.no)) { _, _ ->
@@ -117,22 +116,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setListData(listStories: List<ListStoryItem>) {
-        stories = ArrayList()
-        for (story in listStories) {
-            val list = ListStoryItem(
-                story.photoUrl,
-                story.createdAt,
-                story.name,
-                story.description,
-                story.lon,
-                story.id,
-                story.lat
-            )
-            stories.add(list)
+    private fun setListData() {
+        val adapter = ListStoryAdapter()
+        binding?.rvStory?.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        mainViewModel.listStory.observe(this) { story ->
+            adapter.submitData(lifecycle, story)
         }
-        val adapter = ListStoryAdapter(stories)
-        binding?.rvStory?.adapter = adapter
+
     }
 
     private fun goToLoginActivity() {
@@ -148,16 +142,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToMapsActivity() {
         val intent = MapsActivity.mapsActivityIntent(this)
-        intent.putExtra(MapsActivity.EXTRA_STORIES, stories)
         startActivity(intent)
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding?.progressBar?.visibility = View.VISIBLE
-        } else {
-            binding?.progressBar?.visibility = View.GONE
-        }
     }
 
     companion object {

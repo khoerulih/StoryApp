@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
         val pref = SettingPreferences.getInstance(dataStore)
         val settingViewModel =
-            ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory.getInstance(application, pref))[SettingViewModel::class.java]
         val loginViewModel = ViewModelProvider(
             this,
             ViewModelProvider.NewInstanceFactory()

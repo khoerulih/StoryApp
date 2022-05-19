@@ -38,4 +38,6 @@
     <string name="switch_camera">Switch Camera</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="maps">Maps</string>
+    <string name="retry">Retry</string>
+    <string name="location_error">Can`t get location. Please enable your GPS</string>
 </resources>

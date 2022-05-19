@@ -39,4 +39,6 @@
     <string name="switch_camera">Switch Camera</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="maps">Maps</string>
+    <string name="retry">Ulangi</string>
+    <string name="location_error">Tidak bisa mendapatkan lokasi. Silahkan aktifkan GPS anda</string>
 </resources>

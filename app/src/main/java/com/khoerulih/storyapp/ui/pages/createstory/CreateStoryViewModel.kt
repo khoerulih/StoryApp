@@ -17,7 +17,7 @@ class CreateStoryViewModel: ViewModel() {
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
-    fun createStory(token: String?, image: MultipartBody.Part, description: RequestBody, lat: Float, lon: Float) {
+    fun createStory(token: String?, image: MultipartBody.Part, description: RequestBody, lat: Float?, lon: Float?) {
         val client = ApiConfig.getApiService().createStory("Bearer $token", image, description, lat, lon)
         client.enqueue(object : Callback<CreateStoryResponse> {
             override fun onResponse(call: Call<CreateStoryResponse>, response: Response<CreateStoryResponse>) {

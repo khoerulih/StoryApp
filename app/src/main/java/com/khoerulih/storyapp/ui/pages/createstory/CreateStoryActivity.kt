@@ -44,7 +44,7 @@ class CreateStoryActivity : AppCompatActivity() {
     private var token: String? = null
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var currentLocation: Location
+    private var currentLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +61,7 @@ class CreateStoryActivity : AppCompatActivity() {
 
         val pref = SettingPreferences.getInstance(dataStore)
         val settingViewModel =
-            ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory.getInstance(application, pref))[SettingViewModel::class.java]
 
         val createStoryViewModel = ViewModelProvider(
             this,
@@ -97,8 +97,8 @@ class CreateStoryActivity : AppCompatActivity() {
                         file.name,
                         requestImageFile
                     )
-                    val lat = currentLocation.latitude.toFloat()
-                    val lon = currentLocation.longitude.toFloat()
+                    val lat = currentLocation?.latitude?.toFloat()
+                    val lon = currentLocation?.longitude?.toFloat()
 
                     createStoryViewModel.createStory(token, imageMultipart, description, lat, lon)
                     showLoading(true)
@@ -154,7 +154,7 @@ class CreateStoryActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@CreateStoryActivity,
-                        "Location is not found. Try Again",
+                        getString(R.string.location_error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

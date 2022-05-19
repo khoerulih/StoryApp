@@ -49,7 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val pref = SettingPreferences.getInstance(dataStore)
         val settingViewModel =
-            ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory.getInstance(application, pref))[SettingViewModel::class.java]
 
         mapsViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[MapsViewModel::class.java]
 
@@ -136,12 +136,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         listStory = ArrayList()
         for (story in listStories) {
             val list = ListStoryItem(
+                story.id,
                 story.photoUrl,
                 story.createdAt,
                 story.name,
                 story.description,
                 story.lon,
-                story.id,
                 story.lat
             )
             listStory.add(list)

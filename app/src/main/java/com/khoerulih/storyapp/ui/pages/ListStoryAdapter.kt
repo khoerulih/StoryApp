@@ -2,6 +2,7 @@ package com.khoerulih.storyapp.ui.pages
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
@@ -11,9 +12,11 @@ import com.khoerulih.storyapp.data.remote.responses.ListStoryItem
 import com.khoerulih.storyapp.databinding.ItemRowStoryBinding
 import com.khoerulih.storyapp.ui.pages.detailstory.DetailStoryActivity
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 
-class ListStoryAdapter(private val listStory: ArrayList<ListStoryItem>) :
-    RecyclerView.Adapter<ListStoryAdapter.ListViewHolder>() {
+class ListStoryAdapter() :
+    PagingDataAdapter<ListStoryItem, ListStoryAdapter.ListViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding = ItemRowStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,30 +24,41 @@ class ListStoryAdapter(private val listStory: ArrayList<ListStoryItem>) :
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (photoUrl, createdAt, name, description, long, id, lat) = listStory[position]
-
-        val dataStory = ListStoryItem(
-            photoUrl, createdAt, name, description, long, id, lat
-        )
-
-        Glide.with(holder.itemView.context)
-            .load(photoUrl)
-            .into(holder.binding.ivItemThumbnail)
-        holder.binding.tvItemName.text = name
-        holder.itemView.setOnClickListener {
-            val goToDetailActivity = Intent(holder.itemView.context, DetailStoryActivity::class.java)
-            goToDetailActivity.putExtra(DetailStoryActivity.EXTRA_STORY, dataStory)
-
-            val optionsCompat: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                holder.itemView.context as Activity,
-                Pair(holder.binding.ivItemThumbnail, "detail_thumbnail"),
-                Pair(holder.binding.tvItemName, "detail_name")
-            )
-            holder.itemView.context.startActivity(goToDetailActivity, optionsCompat.toBundle())
+        val data = getItem(position)
+        if(data != null) {
+            holder.bind(data)
         }
     }
 
-    override fun getItemCount(): Int = listStory.size
+    class ListViewHolder(private val binding: ItemRowStoryBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(dataStory: ListStoryItem) {
+            Glide.with(itemView.context)
+                .load(dataStory.photoUrl)
+                .into(binding.ivItemThumbnail)
+            binding.tvItemName.text = dataStory.name
+            itemView.setOnClickListener {
+                val goToDetailActivity = Intent(itemView.context, DetailStoryActivity::class.java)
+                goToDetailActivity.putExtra(DetailStoryActivity.EXTRA_STORY, dataStory)
 
-    class ListViewHolder(var binding: ItemRowStoryBinding) : RecyclerView.ViewHolder(binding.root)
+                val optionsCompat: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    itemView.context as Activity,
+                    Pair(binding.ivItemThumbnail, "detail_thumbnail"),
+                    Pair(binding.tvItemName, "detail_name")
+                )
+                itemView.context.startActivity(goToDetailActivity, optionsCompat.toBundle())
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+            override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
+    }
 }
